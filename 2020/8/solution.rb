@@ -1,16 +1,29 @@
 
-def acc_before_loop(lines)
+def acc_before_loop(lines, flip_index)
     i = 0
     lines_visited = Array.new(lines.size, false)
 
     acc = 0
     while true do
+        if i == lines.size
+            puts flip_index
+            puts acc
+            return true
+        end
         if lines_visited[i]
-            return acc
+            return false
         end
         line = lines[i]
         lines_visited[i] = true
         inst, num = line.split(" ")
+        
+        if i == flip_index
+            if inst == "jmp"
+                inst = "nop"
+            elsif inst == "nop"
+                inst = "jmp"
+            end
+        end
 
         case inst            
         when "acc"
@@ -30,4 +43,6 @@ File.open("input").each do |line|
     lines << line
 end
 
-puts acc_before_loop(lines)
+lines.size.times.each do |flip_index|
+    acc_before_loop(lines, flip_index)
+end
