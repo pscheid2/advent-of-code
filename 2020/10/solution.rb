@@ -32,11 +32,12 @@ end
 
 
 joltages = []
-File.open("test2").each do |line|
+File.open("input").each do |line|
     joltages << line.to_i
 end
 
 joltages << joltages.max + 3
+joltages << 0
 joltages = joltages.sort
 
 puts dist = joltage_distribution(joltages)
