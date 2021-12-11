@@ -8,31 +8,44 @@ def print_board(board)
   board.each { |x| puts x.join(" ")}
 end
 
-def check_for_winner(boards)
+def check_for_loser(boards)
+  count = 0
+  loser = []
   boards.each do |board|
-    # check rows
-    board.each do |row|
-      if row.select { |el| el.include?("*") }.size == 5
-        return board
-      end
+    if !check_for_winner(board)
+      loser = board
+      count += 1
     end
-
-    # check columns
-    board.first.size.times do |i|
-      flag = false
-      board.first.size.times do |j|
-        puts board[j][i]
-        if !board[j][i].include?("*")
-          flag = true
-          break
-        end
-      end
-      if !flag
-        return board
-      end
+    if count > 1
+      return nil
     end
   end
-  return nil
+  return loser
+end
+
+def check_for_winner(board)
+  # check rows
+  board.each do |row|
+    if row.select { |el| el.include?("*") }.size == 5
+      return true
+    end
+  end
+
+  # check columns
+  board.first.size.times do |i|
+    flag = false
+    board.first.size.times do |j|
+      if !board[j][i].include?("*")
+        flag = true
+        break
+      end
+    end
+    if !flag
+      return true
+    end
+  end
+
+  false
 end
 
 lines = File.open("input.txt").readlines()
@@ -54,9 +67,10 @@ puts drawings.join(",")
 print_boards(boards)
 
 
-winner = []
+loser = nil
 last_draw = 0
 drawings.each do |drawing|
+  puts drawing
   boards.each do |board|
     board.each do |row|
       row.map! do |el|
@@ -69,20 +83,21 @@ drawings.each do |drawing|
     end
   end
 
-  board = check_for_winner(boards)
-  if board
-    winner = board
+  if !loser
+    loser = check_for_loser(boards)
+  end
+  if loser && check_for_winner(loser)
     last_draw = drawing
     break
   end
 end
 
 print_boards(boards)
-puts "Winner!"
-print_board(winner)
+puts "loser!"
+print_board(loser)
 
 sum = 0
-winner.each do |row|
+loser.each do |row|
   row.each do |el|
     if !el.include?("*")
       sum += el.to_i
