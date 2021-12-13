@@ -19,7 +19,19 @@ cords.each do |cord|
       count_map["#{i},#{y}"] += 1
     end
   else
-    puts "Skipping cord #{cord}"
+    if cord[0][1] < cord[1][1] # if y is increasing
+      start_x = cord[0][0]
+      start_y = cord[0][1]
+      (cord[1][0] - cord[0][0] + 1).times do |i|
+        count_map["#{start_x+i},#{start_y+i}"] +=1
+      end
+    else # if y is decreasing
+      start_x = cord[0][0]
+      start_y = cord[0][1]
+      (cord[1][0] - cord[0][0] + 1).times do |i|
+        count_map["#{start_x+i},#{start_y-i}"] +=1
+      end
+    end
   end
 end
 
