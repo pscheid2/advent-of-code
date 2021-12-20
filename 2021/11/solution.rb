@@ -8,8 +8,9 @@ end
 lines = File.open("input.txt").readlines().map { |line| line.tr("\n", "").chars.map(&:to_i) }
 
 count = 0
+round = 1
 
-100.times do
+while true
   # increase by one
   lines.map do |octos|
     octos.map! { |octo| octo+1 }
@@ -47,7 +48,19 @@ count = 0
   lines.map do |octos|
     octos.map! { |octo| octo > 9 ? 0 : octo }
   end
+
+  count_non_zero = 0
+  lines.each do |line|
+    line.each do |octo|
+      count_non_zero += 1 if octo > 0
+    end
+  end
+  if count_non_zero == 0
+    break
+  end
+  round += 1
   print(lines)
 end
 
 puts count
+puts round
