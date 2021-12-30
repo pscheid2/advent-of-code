@@ -19,7 +19,7 @@ def parse_literal(string, ptr, version_sum)
 
   ptr += 5 # one more
 
-  ptr += ((group_count*5+6) % 4)
+  # ptr += ((group_count*5+6) % 4)
   [ptr, version_sum]
 end
 
@@ -54,9 +54,12 @@ def parse_operator(string, ptr, version_sum)
   [ptr, version_sum]
 end
 
-lines = File.open("test.txt").readlines()
+lines = File.open("input.txt").readlines()
+parse(lines.first)
 
-parse(lines[0])
+# parse(lines[0])
 # parse(lines[1])
 # parse(lines[2])
 # parse(lines[3])
+# parse(lines[4])
+# parse(lines[5])
