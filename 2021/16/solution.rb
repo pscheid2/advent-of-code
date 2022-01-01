@@ -5,11 +5,11 @@ def parse(line)
   bin_string = line.hex.to_s(2).rjust(line.size*4, '0').chars
   puts bin_string.join
 
-  ptr, version_sum = parse_operator(bin_string, 0, 0)
-  puts version_sum
+  ptr, value = parse_operator(bin_string, 0)
+  puts value
 end
 
-def parse_literal(string, ptr, version_sum)
+def parse_literal(string, ptr)
   group_count = 0
   while string[ptr] == "1"
     ptr +=5
@@ -18,20 +18,17 @@ def parse_literal(string, ptr, version_sum)
   end
 
   ptr += 5 # one more
-
-  # ptr += ((group_count*5+6) % 4)
-  [ptr, version_sum]
 end
 
-def parse_operator(string, ptr, version_sum)
+def parse_operator(string, ptr)
   # Parsing the common header
-  version_sum += string[ptr...ptr+3].join.to_i(2)
+  value = string[ptr...ptr+3].join.to_i(2)
   ptr += 3
   type_id = string[ptr...ptr+3].join.to_i(2)
   ptr += 3
 
   if type_id == 4
-    ptr, version_sum = parse_literal(string, ptr, version_sum)
+    ptr = parse_literal(string, ptr)
   else
     length_type_id = string[ptr]
     ptr += 1
@@ -40,25 +37,27 @@ def parse_operator(string, ptr, version_sum)
       ptr += 15
       orig_ptr = ptr
       while orig_ptr + length_in_bits > ptr
-        ptr, version_sum = parse_operator(string, ptr, version_sum)
+        ptr, result_value = parse_operator(string, ptr)
+        value += result_value
       end
     else
       num_sub_packets = string[ptr...ptr+11].join.to_i(2)
       ptr += 11
       num_sub_packets.times do
-        ptr, version_sum = parse_operator(string, ptr, version_sum)
+        ptr, result_value = parse_operator(string, ptr)
+        value += result_value
       end
     end
   end
-  [ptr, version_sum]
+  [ptr, value]
 end
 
-lines = File.open("input.txt").readlines()
-parse(lines.first)
+lines = File.open("test.txt").readlines()
+# parse(lines.first)
 
-# parse(lines[0])
-# parse(lines[1])
-# parse(lines[2])
-# parse(lines[3])
-# parse(lines[4])
-# parse(lines[5])
+parse(lines[0])
+parse(lines[1])
+parse(lines[2])
+parse(lines[3])
+parse(lines[4])
+parse(lines[5])
