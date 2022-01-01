@@ -26,7 +26,6 @@ end
 def parse_operator(string, ptr, version_sum)
   # Parsing the common header
   version_sum += string[ptr...ptr+3].join.to_i(2)
-  puts version_sum
   ptr += 3
   type_id = string[ptr...ptr+3].join.to_i(2)
   ptr += 3
@@ -40,7 +39,7 @@ def parse_operator(string, ptr, version_sum)
       length_in_bits = string[ptr...ptr+15].join.to_i(2)
       ptr += 15
       orig_ptr = ptr
-      while orig_ptr + length_in_bits >= ptr
+      while orig_ptr + length_in_bits > ptr
         ptr, version_sum = parse_operator(string, ptr, version_sum)
       end
     else
