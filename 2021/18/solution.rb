@@ -1,5 +1,6 @@
 require 'JSON'
 require 'pry'
+require 'set'
 
 def parse_list(line)
   JSON.parse(line.rstrip)
@@ -20,42 +21,28 @@ def reduce(string)
       
       to_explode = string[index..end_index]
       left, right = JSON.parse(to_explode)
-      new_string = string.clone
 
       # left
-      left_index = index
-      while !new_string[left_index].match?(/[0-9]/)
-        left_index -= 1
-        break if left_index < 0
-      end
-      if left_index > 0
-        left_end_index = left_index
-        while left_end_index-1 > 0 && new_string[left_end_index-1].match?(/[0-9]/)
-          left_end_index -= 1
-        end
-        old = new_string.slice!(left_end_index..left_index).to_i
-        new_string.insert(left_end_index, (old+left).to_s)
-        end_index += (old+left).to_s.size - old.to_s.size
+      left_string = string[0...index]
+      flipped = left_string.reverse
+      m = flipped.match(/\d+/)
+      if m
+        left_num = m[0].reverse
+        new_num = left_num.to_i + left
+        flipped.sub!(m[0], new_num.to_s.reverse)
+        left_string = flipped.reverse
       end
 
       # right
-      right_index = end_index
-      while !new_string[right_index].match?(/[0-9]/)
-        right_index += 1
-        break if right_index >= new_string.size
-      end
-      if right_index < new_string.size
-        right_end_index = right_index
-        while right_end_index+1 < new_string.size && new_string[right_end_index+1].match?(/[0-9]/)
-          right_end_index += 1
-        end
-        old = new_string.slice!(right_index..right_end_index).to_i
-        new_string.insert(right_index, (old+right).to_s)
+      right_string = string[end_index+1..-1]
+      m = right_string.match(/\d+/)
+      if m
+        right_num = m[0]
+        new_num = right_num.to_i + right
+        right_string.sub!(right_num, new_num.to_s)
       end
 
-      new_string.sub!(to_explode, "0")
-
-      return new_string
+      return "#{left_string}0#{right_string}"
     end
   end
 
@@ -73,18 +60,44 @@ def reduce(string)
   string
 end
 
-lines = File.open("test.txt").readlines
+def magnitude(string)
+  while string.count(",") > 1
+    string.scan(/\[\d+,\d+\]/).each do |m|
+      left_digit, right_digit = m[1...-1].split(",")
+      string = "#{string[0...string.index(m)]}#{left_digit.to_i * 3 + right_digit.to_i * 2}#{string[string.index(m)+m.size..-1]}"
+    end
+    p string
+  end
+  left_digit, right_digit = string[1...-1].split(",")
+  return left_digit.to_i * 3 + right_digit.to_i * 2
 
-cur = lines.first.rstrip
+end
+
+lines = File.open("input.txt").readlines.map(&:rstrip)
+
+# part 1
+cur = lines.first
 lines.drop(1).each do |line|
-  cur = "[#{cur},#{line.rstrip}]"
+  cur = "[#{cur},#{line}]"
   new_string = nil
   while new_string != cur
     cur = new_string if new_string
-    p cur
     new_string = reduce(cur)
   end
 end
-
-
 p cur
+p magnitude(cur)
+
+# part 2
+# magnitudes = Set.new
+# pairs = lines.combination(2).to_a
+# pairs.each do |pair|
+#   cur = "[#{pair.first},#{pair.last}]"
+#   new_string = nil
+#   while new_string != cur
+#     cur = new_string if new_string
+#     new_string = reduce(cur)
+#   end
+#   magnitudes << magnitude(cur)
+# end
+# p magnitudes.max
