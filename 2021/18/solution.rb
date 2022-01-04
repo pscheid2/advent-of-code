@@ -66,7 +66,6 @@ def magnitude(string)
       left_digit, right_digit = m[1...-1].split(",")
       string = "#{string[0...string.index(m)]}#{left_digit.to_i * 3 + right_digit.to_i * 2}#{string[string.index(m)+m.size..-1]}"
     end
-    p string
   end
   left_digit, right_digit = string[1...-1].split(",")
   return left_digit.to_i * 3 + right_digit.to_i * 2
@@ -89,15 +88,15 @@ p cur
 p magnitude(cur)
 
 # part 2
-# magnitudes = Set.new
-# pairs = lines.combination(2).to_a
-# pairs.each do |pair|
-#   cur = "[#{pair.first},#{pair.last}]"
-#   new_string = nil
-#   while new_string != cur
-#     cur = new_string if new_string
-#     new_string = reduce(cur)
-#   end
-#   magnitudes << magnitude(cur)
-# end
-# p magnitudes.max
+magnitudes = Set.new
+pairs = lines.combination(2).to_a
+pairs.each do |pair|
+  cur = "[#{pair.first},#{pair.last}]"
+  new_string = nil
+  while new_string != cur
+    cur = new_string if new_string
+    new_string = reduce(cur)
+  end
+  magnitudes << magnitude(cur)
+end
+p magnitudes.max
