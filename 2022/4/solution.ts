@@ -10,7 +10,7 @@ for (const line of lines) {
   const [startR2, endR2] = range2.split("-");
 
   if (
-    rangeFullyContains(
+    rangesOverlap(
       parseInt(startR1),
       parseInt(endR1),
       parseInt(startR2),
@@ -23,18 +23,22 @@ for (const line of lines) {
 
 console.log(count);
 
-function rangeFullyContains(
+function rangesOverlap(
   startR1: number,
   endR1: number,
   startR2: number,
   endR2: number
 ) {
-  // range1 is contained by range 2
-  if (startR1 >= startR2 && endR1 <= endR2) {
+  if (startR1 >= startR2 && startR1 <= endR2) {
     return true;
   }
-  // range2 is contained by range 1
-  if (startR2 >= startR1 && endR2 <= endR1) {
+  if (endR1 >= startR2 && endR1 <= endR2) {
+    return true;
+  }
+  if (startR2 >= startR1 && startR2 <= endR1) {
+    return true;
+  }
+  if (endR2 >= startR1 && endR2 <= endR1) {
     return true;
   }
   return false;
