@@ -3,11 +3,15 @@ const contents = readFileSync("input.txt", "utf-8");
 
 const lines = contents.split(/\r?\n/);
 let sum = 0;
-for (const line of lines) {
-  const first = line.slice(0, line.length / 2);
-  const second = line.slice(line.length / 2);
-  const secondSet = new Set(second);
-  const commonChar = Array.from(first).find((char) => secondSet.has(char));
+for (let i = 0; i < lines.length; i += 3) {
+  const line1 = lines[i];
+  const line2 = lines[i + 1];
+  const line3 = lines[i + 2];
+  const secondSet = new Set(line2);
+  const thirdSet = new Set(line3);
+  const commonChar = Array.from(line1).find(
+    (char) => secondSet.has(char) && thirdSet.has(char)
+  );
 
   if (!commonChar) {
     throw new Error("No common char.");
