@@ -25,13 +25,8 @@ for (const line of lines) {
 
   console.log(quantity, from, to);
 
-  for (let i = 0; i < quantity; i += 1) {
-    const popped = stacks[from - 1].pop();
-    if (!popped) {
-      throw new Error("balh");
-    }
-    stacks[to - 1].push(popped);
-  }
+  const popped = stacks[from - 1].splice(stacks[from - 1].length - quantity);
+  stacks[to - 1].push(...popped);
 }
 
 console.log(stacks);
