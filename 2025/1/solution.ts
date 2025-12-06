@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-const contents = readFileSync("input.txt", "utf-8");
+const contents = readFileSync("sample.txt", "utf-8");
 
 const lines = contents.split(/\r?\n/);
 
@@ -19,12 +19,15 @@ for (const line of lines) {
     throw new Error('this shouldnt happen');
   }
 
+  // zeroCount += Math.abs(Math.floor(position / 100))
   position = position % 100;
-
-  if (position === 0) {
-    zeroCount++;
+  if (position < 0) {
+    position = 100 + position;
   }
-  // console.log(position);
+  if (position === 0) {
+    zeroCount += 1;
+  }
+  console.log(`pos ${position} : zeroCount ${zeroCount}`);
 }
 
 console.log(zeroCount);
