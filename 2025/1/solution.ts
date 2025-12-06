@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-const contents = readFileSync("sample.txt", "utf-8");
+const contents = readFileSync("input.txt", "utf-8");
 
 const lines = contents.split(/\r?\n/);
 
@@ -8,26 +8,25 @@ let zeroCount = 0;
 for (const line of lines) {
   const direction = line.substr(0,1);
   const amount = parseFloat(line.substr(1));
-  // console.log(direction);
-  // console.log(amount);
 
-  if (direction === 'L') {
-    position = position - amount;
-  } else if (direction === 'R') {
-    position = position + amount;
-  } else {
-    throw new Error('this shouldnt happen');
+  for (let i = 0; i < amount; i++) {
+    if (direction === 'L') {
+      position -= 1;
+    } else if (direction === 'R') {
+      position += 1;
+    } else {
+      throw new Error('this shouldnt happen');
+    }
+  
+    if (position % 100 === 0) {
+      zeroCount += 1;
+    }
   }
-
-  // zeroCount += Math.abs(Math.floor(position / 100))
-  position = position % 100;
+  position = position % 100
   if (position < 0) {
-    position = 100 + position;
+    position = 100 + position
   }
-  if (position === 0) {
-    zeroCount += 1;
-  }
-  console.log(`pos ${position} : zeroCount ${zeroCount}`);
+  // console.log(`pos ${position} : zeroCount ${zeroCount}`);
 }
 
 console.log(zeroCount);
